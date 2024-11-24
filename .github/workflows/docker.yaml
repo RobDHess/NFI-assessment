@@ -1,0 +1,48 @@
+name: Build, Test, and Save Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Build the Docker Image
+    - name: Build Docker Image
+      run: |
+        docker build -t nfi-app .
+
+    # Step 3: Test the Docker Image
+    - name: Run API Container for Testing
+      run: |
+        docker run -d --name test-container -p 8000:8000 nfi-app
+        sleep 5  # Wait for the container to be ready
+        curl -f http://localhost:8000/health  # Test the health endpoint
+
+    # Step 4: Stop and Remove the Test Container
+    - name: Stop and Remove Test Container
+      run: |
+        docker stop test-container
+        docker rm test-container
+
+    # Step 5: Save Docker Image as File
+    - name: Save Docker Image
+      run: |
+        docker save nfi-app -o nfi-app.tar
+
+    # Step 6: Upload Docker Image as Artifact
+    - name: Upload Docker Image
+      uses: actions/upload-artifact@v3
+      with:
+        name: docker-image
+        path: nfi-app.tar

@@ -1,0 +1,20 @@
+# Exclude test files and markdown files
+tests/
+*.md
+pytest.ini
+performance_report.txt
+
+# Exclude GitHub-specific files
+.github/
+.gitignore
+
+# Exclude CI/CD configuration
+*.yaml
+*.yml
+
+# Exclude pycache files
+__pycache__/
+.pytest_cache/
+
+
+
