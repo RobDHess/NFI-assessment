@@ -8,11 +8,6 @@ from .api_utils import run_main
 app = FastAPI()
 
 
-class InputData(BaseModel):
-    spoor: str
-    profielen: list[str]
-
-
 @app.get("/health")
 def health_check():
     """Health check endpoint"""
